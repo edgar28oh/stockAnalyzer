@@ -5,6 +5,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from plotly import graph_objs as gr_ob
 from bs4 import BeautifulSoup
+import nltk
+nltk.download('vader_lexicon') # fix to deploy to streamlit
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from urllib.request import urlopen, Request
 
