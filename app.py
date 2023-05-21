@@ -25,6 +25,7 @@ if start_date < end_date:
 else:
     st.sidebar.error('Error: End date must fall after start date.')
 
+# go button
 button_clicked = st.sidebar.button("GO")
 if button_clicked == "GO":
     main()
