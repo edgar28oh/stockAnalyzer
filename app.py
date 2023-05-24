@@ -15,7 +15,7 @@ st.sidebar.subheader("""Stock Search Web App""")
 selected_stock = st.sidebar.text_input("Enter Stock Ticker", "MSFT")
 stock_ticker = yf.Ticker(selected_stock)
 
-# make function to load the ticker data
+# ticker data parameters
 today = datetime.date.today()
 past = today - datetime.timedelta(days=365)
 start_date = st.sidebar.date_input('Start date', past)
@@ -48,13 +48,17 @@ print(url)
 
 
 def main():
-    # load ticker hisroty
-    data = load_data(selected_stock)
-
-    # header
-    st.header("""Daily **closing and openning price** for """ +
-              stock_ticker.info['longName'])
     
+    # load ticker hisroty, if ticker not found then user
+    # enetered an incorrect ticker symbol
+    try:
+        data = load_data(selected_stock)
+    # header
+        st.header("""Daily **closing and openning price** for """ +
+                stock_ticker.info['longName'])
+    except:
+        return st.warning("ENTER A CORRECT STOCK TICKER")
+
     st.subheader(
         ":red[WARNING: THIS IS NOT FINANCIAL ADVICE!]")
 
@@ -76,36 +80,36 @@ def main():
 
     with col1:
         st.metric(label="Recommendation",
-                  value=stock_ticker.info['recommendationKey'], delta="")
+                value=stock_ticker.info['recommendationKey'], delta="")
         st.metric(label="Foward PE",
-                  value=stock_ticker.info['forwardPE'], delta="")
+                value=stock_ticker.info['forwardPE'], delta="")
         # some tickers don't generate a trailing PE
         # in order to avoid crashing I added a try block
         try:
             st.metric(label="Trailing PE",
-                  value=stock_ticker.info['trailingPE'], delta="")
+                value=stock_ticker.info['trailingPE'], delta="")
         except:
             st.metric(label="Trailing PE",
-                  value=('No Data'), delta="")
+                value=('No Data'), delta="")
     with col2:
         st.metric(label="Volume",
-                  value=stock_ticker.info['volume'], delta="")
+                value=stock_ticker.info['volume'], delta="")
         st.metric(label="Market Cap",
-                  value=stock_ticker.info['marketCap'], delta="")
+                value=stock_ticker.info['marketCap'], delta="")
         try:
             st.metric(label="Short Ratio",
-                  value=stock_ticker.info['shortRatio'], delta="")
+                value=stock_ticker.info['shortRatio'], delta="")
         except:
             st.metric(label="Short Ratio",
-                  value=('No Data'), delta="")
+                value=('No Data'), delta="")
         
     with col3:
         st.metric(label="50-day Average",
-                  value=stock_ticker.info['fiftyDayAverage'], delta="")
+                value=stock_ticker.info['fiftyDayAverage'], delta="")
         st.metric(label="52-week High",
-                  value=stock_ticker.info['fiftyTwoWeekHigh'], delta="")
+                value=stock_ticker.info['fiftyTwoWeekHigh'], delta="")
         st.metric(label="52-week Low",
-                  value=stock_ticker.info['fiftyTwoWeekLow'], delta="")
+                value=stock_ticker.info['fiftyTwoWeekLow'], delta="")
 
     st.subheader("Raw Data")
     st.write(data)
@@ -167,6 +171,7 @@ def main():
     st.subheader("News Sentiment Analysis")
     st.bar_chart(mean_data)
     stock_ticker.info
+
 
 if __name__ == "__main__":
     main()
