@@ -146,13 +146,13 @@ def main():
         else:
             pass
 
-        ts = row.td.text.split(' ')
+        ts = row.td.text.strip()
 
-        if len(ts) == 1:
-            time = ts[0]
+        if len(ts) < 10:
+            time = ts
         else:
-            date = ts[0]
-            time = ts[1]
+            date = ts[:9]
+            time = ts[10:]
         parsed.append([date + " " + time, title, link])
 
     
@@ -162,6 +162,7 @@ def main():
 
     vader = SentimentIntensityAnalyzer()
     df['compound'] = df['title'].apply(lambda title: vader.polarity_scores(title)['compound'])
+    
     df['date'] = pd.to_datetime(df.date).dt.date
 
     mean_data = df.groupby(['date']).mean(numeric_only=True)
